@@ -1,0 +1,46 @@
+<DOCTYPE html>
+    <html>
+        <head> <link rel="stylesheet" type="text/css" href="style.css">
+            {% load static %}
+         </head><body>
+<h1>Welcome {{request.session.name}} </h1>
+<a href="/logout"><button>logout</button></a>
+<h1>Here are your appointments for  {% now "jS F Y H:i" %} :</h1>
+<table>
+    <thead><th>Task</th><th>Date</th><th>Time</th> <th>Status</th> <th>Actions</th></thead>
+    {%for meeting in today%}
+    <tr><td>{{meeting.task}}</td><td>{{meeting.date}}</td><td>{{meeting.clock}}</td><td>{{meeting.status}}</td><td><a href="/{{meeting.id}}"><button>Edit</button></a></td><td><a href="/delete/{{meeting.id}}"><button>Delete</button></a></td></tr>
+    {%endfor%}
+</table>
+
+<h2>Future appointments:</h2>
+<table>
+    <thead><th>Task</th><th>Date</th><th>Time</th></thead>
+    {%for meeting in laterdate%}
+    <tr><td>{{meeting.task}}</td><td>{{meeting.date}}</td><td>{{meeting.clock}}</td></tr>
+    {%endfor%}
+</table>
+
+<h2>Add a new Appointment</h2>
+<form action="/create" method="POST">
+{% csrf_token %} 
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<label for="task">
+<p>Task:</p> <input type="text" name="task">
+</label>
+<label for="clock">
+<p>Time:</p><input type="time" name="clock" id="">
+</label>
+<label for="date">
+<p>Date</p><input type="date" name="date" id="date">
+</label>
+<button type="submit">Submit</button>
+</form>
+<br>
+</body>
